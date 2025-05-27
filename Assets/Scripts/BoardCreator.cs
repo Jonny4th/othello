@@ -37,6 +37,7 @@ public class BoardCreator : MonoBehaviour
                 var posY = y * size.y - startPosY;
                 Cell cell = Instantiate(m_CellPrototype, new Vector3(posX, posY, 0), Quaternion.identity, m_CellParent);
 
+                cell.SetCoordinates(x, y);
                 cell.name = $"Cell_{x}_{y}";
                 cells.Add((x, y), cell);
             }
