@@ -1,11 +1,25 @@
 using UnityEngine;
 
-public class CellStateController : MonoBehaviour
+public class CellVisualController : MonoBehaviour
 {
     [SerializeField]
     SpriteRenderer m_SpriteRenderer;
 
-    public void UpdateToken(Token token)
+    [SerializeField]
+    Color m_HintColor = Color.yellow;
+
+    public void ShowHintVisual()
+    {
+        m_SpriteRenderer.gameObject.SetActive(true);
+        m_SpriteRenderer.color = m_HintColor;
+    }
+
+    public void HideHintVisual()
+    {
+        m_SpriteRenderer.gameObject.SetActive(false);
+    }
+
+    public void SetToken(Token token)
     {
         Debug.Log($"Placing token: {token} at cell: {name}");
 

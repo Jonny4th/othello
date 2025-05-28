@@ -388,6 +388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1396189173}
+  - component: {fileID: 1396189174}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -411,6 +412,23 @@ Transform:
   - {fileID: 1514139094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1396189174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1396189172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a508649b77e92cb4eb108f3fd7b6b0a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CellPrototype: {fileID: 42151655533067928, guid: 565b9bb3d4e041c4e920c1ccf433c3e3, type: 3}
+  m_BoardWidth: 8
+  m_BoardHeight: 8
+  m_BoardParent: {fileID: 1888935150}
+  IsBlackTurn: 1
 --- !u!1 &1514139092
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,8 +439,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1514139094}
   - component: {fileID: 1514139093}
-  - component: {fileID: 1514139095}
-  - component: {fileID: 1514139096}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -475,7 +491,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 173e2b59bc83a404a951789f6e2029ae, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7830189, g: 0.52762467, b: 0.1071111, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -501,34 +517,6 @@ Transform:
   - {fileID: 1888935150}
   m_Father: {fileID: 1396189173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1514139095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514139092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 955531067c611064aad83b27c2d567d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1514139096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514139092}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cc00927a6f489744ae800380cf6f6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_CellPrototype: {fileID: 42151655533067928, guid: 565b9bb3d4e041c4e920c1ccf433c3e3, type: 3}
-  m_CellParent: {fileID: 1888935150}
-  m_Width: 8
-  m_Height: 8
 --- !u!1 &1528807752
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,41 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardCreator : MonoBehaviour
+public class BoardCreator
 {
-    [SerializeField]
-    private Cell m_CellPrototype;
-
-    [SerializeField]
-    private Transform m_CellParent;
-
-    [SerializeField]
-    private int m_Width = 8;
-
-    [SerializeField]
-    private int m_Height = 8;
-
-    private void Start()
+    public static Dictionary<(int,int),T> CreateBoard<T>(T prototype, int width, int height, Transform parent) where T : MonoBehaviour, ICell
     {
-        CreateBoard();
-    }
+        var cells = new Dictionary<(int, int), T>();
 
-    public Dictionary<(int,int),Cell> CreateBoard()
-    {
-        var cells = new Dictionary<(int, int), Cell>();
+        Vector3 size = prototype.GetComponent<SpriteRenderer>().bounds.size;
 
-        Vector3 size = m_CellPrototype.GetComponent<SpriteRenderer>().bounds.size;
+        float startPosX = size.x * width / 2f - 0.5f;
+        float startPosY = size.y * height / 2f - 0.5f;
 
-        float startPosX = size.x * m_Width / 2f - 0.5f;
-        float startPosY = size.y * m_Height / 2f - 0.5f;
-
-        for (int x = 0; x < m_Width; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < m_Height; y++)
+            for (int y = 0; y < height; y++)
             {
                 var posX = x * size.x - startPosX;
                 var posY = y * size.y - startPosY;
-                Cell cell = Instantiate(m_CellPrototype, new Vector3(posX, posY, 0), Quaternion.identity, m_CellParent);
+                var cell = Object.Instantiate(prototype, new Vector3(posX, posY, 0), Quaternion.identity, parent);
 
                 cell.SetCoordinates(x, y);
                 cell.name = $"Cell_{x}_{y}";

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7436237707546001955}
   - component: {fileID: 7619456106773009699}
-  - component: {fileID: 42151655533067928}
   - component: {fileID: 49712479125805961}
   - component: {fileID: 5780351834688609121}
+  - component: {fileID: 42151655533067928}
   - component: {fileID: 3508606112905604570}
   m_Layer: 0
   m_Name: Cell
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5254902}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -92,21 +92,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &42151655533067928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4369428119981613440}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8ef758ee2b339b459794a682d6f6aec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Coordinates:
-    X: 0
-    Y: 0
 --- !u!61 &49712479125805961
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -182,6 +167,25 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &42151655533067928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4369428119981613440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8ef758ee2b339b459794a682d6f6aec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Coordinates:
+    X: 0
+    Y: 0
+  m_CellStateController: {fileID: 3508606112905604570}
+  OnClicked:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &3508606112905604570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SpriteRenderer: {fileID: 1916809127269854476}
+  m_HintColor: {r: 0.93130887, g: 1, b: 0.015686275, a: 0.2901961}
 --- !u!1 &7342668453661016763
 GameObject:
   m_ObjectHideFlags: 0
