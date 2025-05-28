@@ -10,7 +10,7 @@ internal class TestCell : ICell
 
     public Token CurrentToken { get; set; }
 
-    public event Action<Cell> OnCellClicked;
+    public event Action<ICell> OnCellClicked;
 
     public void HideHintVisual()
     {
