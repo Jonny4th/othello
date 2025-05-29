@@ -51,12 +51,6 @@ public class Cell : MonoBehaviour, ICell
 
     public void SetToken(Token token)
     {
-        if(m_IsOccupied)
-        {
-            Debug.LogWarning($"Cell at {m_Coordinates} is already occupied. Cannot place token: {token}");
-            return;
-        }
-
         //if legal move place token.
         
         m_CurrentToken = token;
