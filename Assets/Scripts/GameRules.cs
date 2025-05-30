@@ -29,19 +29,16 @@ public class GameRules
         if(neighbour == Token.None || neighbour == player) return 0;
 
         anchorPoint += direction;
-        int x = anchorPoint.x;
-        int y = anchorPoint.y;
         var captureAmount = 1;
 
         while(IsInBounds(anchorPoint))
         {
-            Token current = state.Cells[x, y];
+            Token current = state.Cells[anchorPoint.x, anchorPoint.y];
 
             if(current == Token.None) return captureAmount;
             if(current == player) return 0;
 
-            x += (int)direction.x;
-            y += (int)direction.y;
+            anchorPoint += direction;
             captureAmount++;
         }
 
