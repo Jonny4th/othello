@@ -9,25 +9,28 @@ public struct BoardState
 
 public class GameRules
 {
-    private Token GetDirectionalNeighbour((int x, int y) anchorPoint, Vector2Int direction, BoardState state)
+    private Token GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
-        int x = anchorPoint.x + direction.x;
-        int y = anchorPoint.y + direction.y;
+        anchorPoint += direction;
 
-        if(x < 0 || x >= state.Cells.GetLength(0) || y < 0 || y >= state.Cells.GetLength(1))
+        bool isOutOfBounds = anchorPoint.x < 0 || anchorPoint.x >= state.Cells.GetLength(0) ||
+                             anchorPoint.y < 0 || anchorPoint.y >= state.Cells.GetLength(1);
+
+        if(isOutOfBounds)
             return Token.None;
 
-        return state.Cells[x, y];
+        return state.Cells[anchorPoint.x, anchorPoint.y];
     }
 
-    private int GetDirectionalCaptureAmount(Token player, (int x, int y) anchorPoint, Vector2Int direction, BoardState state)
+    private int GetDirectionalCaptureAmount(Token player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
         Token neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
 
         if(neighbour == Token.None || neighbour == player) return 0;
 
-        int x = anchorPoint.x + direction.x;
-        int y = anchorPoint.y + direction.y;
+        anchorPoint += direction;
+        int x = anchorPoint.x;
+        int y = anchorPoint.y;
         var captureAmount = 1;
 
         while(x >= 0 && x < state.Cells.GetLength(0) && y >= 0 && y < state.Cells.GetLength(1))
@@ -70,13 +73,13 @@ public class GameRules
 
                 foreach(var direction in directions)
                 {
-                    int captureAmount = GetDirectionalCaptureAmount(player, (i, j), direction, state);
+                    int captureAmount = GetDirectionalCaptureAmount(player, new Vector2Int(i, j), direction, state);
 
                     if(captureAmount == 0) continue;
 
                     int targetX = i + direction.x * captureAmount;
                     int targetY = j + direction.y * captureAmount;
-                        
+
                     if(legalMoves.Contains((targetX, targetY))) continue;
 
                     legalMoves.Add((targetX, targetY));
