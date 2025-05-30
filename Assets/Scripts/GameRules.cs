@@ -33,7 +33,7 @@ public class GameRules
         int y = anchorPoint.y;
         var captureAmount = 1;
 
-        while(x >= 0 && x < state.Cells.GetLength(0) && y >= 0 && y < state.Cells.GetLength(1))
+        while(IsInBounds(anchorPoint))
         {
             Token current = state.Cells[x, y];
 
@@ -46,6 +46,12 @@ public class GameRules
         }
 
         return 0;
+
+        bool IsInBounds(Vector2Int point)
+        {
+            return point.x >= 0 && point.x < state.Cells.GetLength(0) &&
+                   point.y >= 0 && point.y < state.Cells.GetLength(1);
+        }
     }
 
     private readonly Vector2Int[] directions = new Vector2Int[]
