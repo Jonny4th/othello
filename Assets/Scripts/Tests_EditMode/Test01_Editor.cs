@@ -173,4 +173,31 @@ public class Test01_Editor
         Assert.IsTrue(outflankedTokens.Contains((3, 4)));
         Assert.IsTrue(outflankedTokens.Contains((3, 2)));
     }
+
+    [Test]
+    public void TestAllWhite()
+    {
+        var state = new BoardStateCreator().Build();
+        state.LastPlacedDiscCoordinates = new Coordinates(1, 4);
+        state.Cells[4, 4] = Occupancy.White;
+        state.Cells[3, 3] = Occupancy.White;
+
+        /* Simulate all White tokens
+        7 - - - - - - - -
+        6 - - - - - - - -
+        5 - - - - - - - -
+        4 - - - o o - - -
+        3 - - - o o - - -
+        2 - - - - - - - -
+        1 - - - - - - - -
+        0 - - - - - - - -
+          0 1 2 3 4 5 6 7
+        */
+
+        var outflankedTokens = m_GameRule.FindLegalMoves(state, Occupancy.Black);
+        Debug.Log($"Legal Moves: {string.Join(", ", outflankedTokens.Select(m => $"({m.Item1},{m.Item2})"))}");
+
+        Assert.IsNotNull(outflankedTokens);
+        Assert.AreEqual(0, outflankedTokens.Count());
+    }
 }

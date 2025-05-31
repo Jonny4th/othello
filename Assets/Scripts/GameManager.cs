@@ -19,6 +19,11 @@ public class GameManager : MonoBehaviour
     //private TMP_Text m_CurrentTurnPlayer;
 
     public bool IsBlackTurn = true; // Track whose turn it is.
+    
+    [SerializeField]
+    private bool m_IsGameOver = false;
+    public bool IsGameOver => m_IsGameOver;
+
 
     private Cell[,] m_Cells;
 
@@ -80,9 +85,9 @@ public class GameManager : MonoBehaviour
             TurnPhase();
         }
 
-        foreach(var hint in m_CurrentLegalMoves)
+        foreach((int x, int y) in m_CurrentLegalMoves)
         {
-            m_Cells[hint.Item1, hint.Item2].ShowHintVisual();
+            m_Cells[x, y].ShowHintVisual();
         }
     }
 
@@ -92,7 +97,7 @@ public class GameManager : MonoBehaviour
 
         if(!m_CurrentLegalMoves.Contains(cell.Coordinates.ToTuple())) return;
 
-        foreach(var c in m_Cells) c.HideHintVisual(); 
+        foreach(var c in m_Cells) c.HideHintVisual();
 
         var token = IsBlackTurn ? Occupancy.Black : Occupancy.White;
         cell.SetToken(token);
@@ -104,11 +109,23 @@ public class GameManager : MonoBehaviour
             Cells = ConvertCellsToTokenMap(m_Cells)
         };
 
-        foreach(var coords in m_GameRules.GetAllOutflankedTokens(boardState))
+        foreach((int x, int y) in m_GameRules.GetAllOutflankedTokens(boardState))
         {
-            m_Cells[coords.Item1, coords.Item2].SetToken(token);
+            m_Cells[x, y].SetToken(token);
         };
 
+        boardState.Cells = ConvertCellsToTokenMap(m_Cells);
+
+        if(m_GameRules.IsGameOver(boardState))
+        {
+            (int a, int b) = m_GameRules.CountTokens(boardState);
+            var winner = a > b ? Occupancy.Black : Occupancy.White;
+            if(a == b) { winner = Occupancy.None; }
+
+            Debug.Log($"Game Over: {winner} won.\nBlack / White:{a}/{b}");
+            return;
+        }
+     
         TurnPhase();
     }
 

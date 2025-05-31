@@ -59,6 +59,58 @@ public class GameRules
         new (1, -1),// Down-Right
     };
 
+    public (int black, int white) CountTokens(BoardState state)
+    {
+        int blackCount = 0;
+        int whiteCount = 0;
+
+        for(int i = 0; i < state.Cells.GetLength(0); i++)
+        {
+            for(int j = 0; j < state.Cells.GetLength(1); j++)
+            {
+                switch(state.Cells[i, j])
+                {
+                    case Occupancy.Black:
+                        blackCount++;
+                        break;
+                    case Occupancy.White:
+                        whiteCount++;
+                        break;
+                }
+            }
+        }
+
+        return (blackCount, whiteCount);
+    }
+
+    public bool IsGameOver(BoardState state)
+    {
+        return isBoardFull(state) || isOverTaken(state) || isNoLegalMovesPossible(state) ;
+
+        bool isOverTaken(BoardState state)
+        {
+            (int b, int w) = CountTokens(state);
+            return b == 0 || w == 0;
+        }
+
+        bool isBoardFull(BoardState state)
+        {
+            foreach(var cell in state.Cells)
+            {
+                if(cell == Occupancy.None) return false;
+            }
+
+            return true;
+        }
+
+        bool isNoLegalMovesPossible(BoardState state)
+        {
+            var blackMoves = FindLegalMoves(state, Occupancy.Black);
+            var whiteMoves = FindLegalMoves(state, Occupancy.White);
+            return blackMoves.Length == 0 && whiteMoves.Length == 0;
+        }
+    }
+
     public (int, int)[] FindLegalMoves(BoardState state, Occupancy player)
     {
         var legalMoves = new List<(int, int)>();
