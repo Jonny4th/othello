@@ -1,6 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Occupancy
+{
+    None,
+    Black,
+    White,
+    OutOfBounds,
+}
+
 public struct BoardState
 {
     public Coordinates LastPlacedDiscCoordinates;

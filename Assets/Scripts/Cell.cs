@@ -21,14 +21,6 @@ public struct Coordinates
     }
 }
 
-public enum Occupancy
-{
-    None,
-    Black,
-    White,
-    OutOfBounds,
-}
-
 public class Cell : MonoBehaviour, ICell
 {
     [SerializeField]
