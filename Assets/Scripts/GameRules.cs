@@ -20,6 +20,11 @@ public struct Coordinates
         return new Vector2Int(X, Y);
     }
 
+    public (int, int) ToTuple()
+    {
+        return (X, Y);
+    }
+
     public override string ToString()
     {
         return $"({X}, {Y})";

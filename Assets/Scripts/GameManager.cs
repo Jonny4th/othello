@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Transform m_BoardParent;
 
+    //[SerializeField]
+    //private TMP_Text m_CurrentTurnPlayer;
+
     public bool IsBlackTurn = true; // Track whose turn it is.
 
     private Cell[,] m_Cells;
@@ -22,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        CreateBoard();
+        StartGame();
     }
 
     private void CreateBoard()
@@ -44,9 +48,21 @@ public class GameManager : MonoBehaviour
         {
             cell.OnCellClicked += OnCellClicked;
         }
-
-        ShowHint(Occupancy.Black);
     }
+
+    public void StartGame()
+    {
+        CreateBoard();
+        IsBlackTurn = true;
+        TurnPhase();
+    }
+
+    public void TurnPhase()
+    {
+        ShowHint(IsBlackTurn ? Occupancy.Black : Occupancy.White);
+    }
+
+    (int, int)[] m_CurrentLegalMoves;
 
     private void ShowHint(Occupancy player)
     {
@@ -56,7 +72,15 @@ public class GameManager : MonoBehaviour
             Cells = ConvertCellsToTokenMap(m_Cells)
         };
 
-        foreach(var hint in m_GameRules.FindLegalMoves(boardState, player))
+        m_CurrentLegalMoves = m_GameRules.FindLegalMoves(boardState, player);
+
+        if(m_CurrentLegalMoves.Length == 0)
+        {
+            IsBlackTurn = !IsBlackTurn;
+            TurnPhase();
+        }
+
+        foreach(var hint in m_CurrentLegalMoves)
         {
             m_Cells[hint.Item1, hint.Item2].ShowHintVisual();
         }
@@ -64,10 +88,9 @@ public class GameManager : MonoBehaviour
 
     private void OnCellClicked(ICell cell)
     {
-        if(cell.CurrentToken != Occupancy.None)
-        {
-            return;
-        }
+        if(cell.CurrentToken != Occupancy.None) return;
+
+        if(!m_CurrentLegalMoves.Contains(cell.Coordinates.ToTuple())) return;
 
         foreach(var c in m_Cells) c.HideHintVisual(); 
 
@@ -85,6 +108,8 @@ public class GameManager : MonoBehaviour
         {
             m_Cells[coords.Item1, coords.Item2].SetToken(token);
         };
+
+        TurnPhase();
     }
 
     public Occupancy[,] ConvertCellsToTokenMap(Cell[,] cells)
