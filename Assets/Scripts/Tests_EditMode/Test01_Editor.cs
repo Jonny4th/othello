@@ -20,7 +20,7 @@ public class Test01_Editor
     */
 
     [Test]
-    public void InittialStateLegalMoves()
+    public void FindLegalMove_00()
     {
         var state = new BoardStateCreator().Build();
         var legalMoves = m_GameRule.FindLegalMoves(state, Occupancy.Black);
