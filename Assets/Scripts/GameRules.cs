@@ -29,34 +29,31 @@ public class GameRules
         return state.Cells[anchorPoint.x, anchorPoint.y];
     }
 
-    private int GetDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    private int GetPossibleDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
-        Occupancy neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
-        if(neighbour == Occupancy.None || neighbour == Occupancy.OutOfBounds || neighbour == player)
-            return 0;
+        // first neighbour must be opponent's token
+        if(!IsFirstNeigbourOpponent()) return 0;
 
         anchorPoint += direction;
         var captureAmount = 1;
 
-        while(IsInBounds(anchorPoint))
+        while(true)
         {
-            Occupancy current = state.Cells[anchorPoint.x, anchorPoint.y];
+            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
 
-            if(current == Occupancy.OutOfBounds || current == player) 
+            if(neighbour == Occupancy.OutOfBounds || neighbour == player)
                 return 0;
-            if(current == Occupancy.None) 
-                return captureAmount;
+            if(neighbour == Occupancy.None)
+                return captureAmount + 1;
 
-            anchorPoint += direction;
             captureAmount++;
+            anchorPoint += direction;
         }
 
-        return 0;
-
-        bool IsInBounds(Vector2Int point)
+        bool IsFirstNeigbourOpponent()
         {
-            return point.x >= 0 && point.x < state.Cells.GetLength(0) &&
-                   point.y >= 0 && point.y < state.Cells.GetLength(1);
+            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
+            return neighbour != Occupancy.None && neighbour != Occupancy.OutOfBounds && neighbour != player;
         }
     }
 
@@ -85,7 +82,7 @@ public class GameRules
 
                 foreach(var direction in directions)
                 {
-                    int captureAmount = GetDirectionalCaptureAmount(player, new Vector2Int(i, j), direction, state);
+                    int captureAmount = GetPossibleDirectionalCaptureAmount(player, new Vector2Int(i, j), direction, state);
 
                     if(captureAmount == 0) continue;
 
