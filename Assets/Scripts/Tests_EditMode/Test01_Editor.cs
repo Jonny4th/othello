@@ -38,6 +38,7 @@ public class Test01_Editor
         */
 
         Assert.IsNotNull(legalMoves);
+        Assert.IsTrue(legalMoves.Count() == 4);
         Assert.IsTrue(legalMoves.Contains((2,3)));
         Assert.IsTrue(legalMoves.Contains((3,2)));
         Assert.IsTrue(legalMoves.Contains((5,4)));
