@@ -4,39 +4,38 @@ using UnityEngine;
 public struct BoardState
 {
     public Coordinates LastPlacedDiscCoordinates;
-    public Token[,] Cells;
+    public Occupancy[,] Cells;
 }
 
 public class GameRules
 {
-    private Token GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    private Occupancy GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
         anchorPoint += direction;
 
         bool isOutOfBounds = anchorPoint.x < 0 || anchorPoint.x >= state.Cells.GetLength(0) ||
                              anchorPoint.y < 0 || anchorPoint.y >= state.Cells.GetLength(1);
 
-        if(isOutOfBounds)
-            return Token.None;
+        if(isOutOfBounds) return Occupancy.OutOfBounds;
 
         return state.Cells[anchorPoint.x, anchorPoint.y];
     }
 
-    private int GetDirectionalCaptureAmount(Token player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    private int GetDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
-        Token neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
-
-        if(neighbour == Token.None || neighbour == player) return 0;
+        Occupancy neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
+        if(neighbour == Occupancy.None || neighbour == player) return 0;
 
         anchorPoint += direction;
         var captureAmount = 1;
 
         while(IsInBounds(anchorPoint))
         {
-            Token current = state.Cells[anchorPoint.x, anchorPoint.y];
+            Occupancy current = state.Cells[anchorPoint.x, anchorPoint.y];
 
-            if(current == Token.None) return captureAmount;
+            if(current == Occupancy.OutOfBounds) return 0;
             if(current == player) return 0;
+            if(current == Occupancy.None) return captureAmount;
 
             anchorPoint += direction;
             captureAmount++;
@@ -63,7 +62,7 @@ public class GameRules
         new (1, -1),// Down-Right
     };
 
-    public (int, int)[] FindLegalMoves(BoardState state, Token player)
+    public (int, int)[] FindLegalMoves(BoardState state, Occupancy player)
     {
         var legalMoves = new List<(int, int)>();
 
@@ -71,7 +70,7 @@ public class GameRules
         {
             for(int j = 0; j < state.Cells.GetLength(1); j++)
             {
-                if(state.Cells[i, j] == Token.None) continue;
+                if(state.Cells[i, j] == Occupancy.None) continue;
                 if(state.Cells[i, j] != player) continue;
 
                 foreach(var direction in directions)

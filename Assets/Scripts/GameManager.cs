@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -38,7 +36,7 @@ public class GameManager : MonoBehaviour
         {
             for(int j = 0; j < m_BoardHeight; j++)
             {
-                m_Cells[i,j].SetToken(initialState.Cells[i,j]);
+                m_Cells[i, j].SetToken(initialState.Cells[i, j]);
             }
         }
 
@@ -47,13 +45,19 @@ public class GameManager : MonoBehaviour
             cell.OnCellClicked += OnCellClicked;
         }
 
+        ShowHint(Occupancy.Black);
+    }
+
+    private void ShowHint(Occupancy player)
+    {
+
         var boardState = new BoardState()
         {
-            LastPlacedDiscCoordinates = new(-1,-1),
+            LastPlacedDiscCoordinates = new(-1, -1),
             Cells = ConvertCellsToTokenMap(m_Cells)
         };
-        
-        foreach(var hint in m_GameRules.FindLegalMoves(boardState, Token.Black))
+
+        foreach(var hint in m_GameRules.FindLegalMoves(boardState, player))
         {
             m_Cells[hint.Item1, hint.Item2].ShowHintVisual();
         }
@@ -61,12 +65,12 @@ public class GameManager : MonoBehaviour
 
     private void OnCellClicked(ICell cell)
     {
-        if(cell.CurrentToken != Token.None)
+        if(cell.CurrentToken != Occupancy.None)
         {
             return;
         }
 
-        var token = IsBlackTurn ? Token.Black : Token.White;
+        var token = IsBlackTurn ? Occupancy.Black : Occupancy.White;
         cell.SetToken(token);
         IsBlackTurn = !IsBlackTurn;
 
@@ -77,12 +81,12 @@ public class GameManager : MonoBehaviour
         };
     }
 
-    public Token[,] ConvertCellsToTokenMap(Cell[,] cells)
+    public Occupancy[,] ConvertCellsToTokenMap(Cell[,] cells)
     {
         var lenX = cells.GetLength(0);
         var lenY = cells.GetLength(1);
 
-        var result = new Token[lenX, lenY];
+        var result = new Occupancy[lenX, lenY];
 
         foreach(var cell in cells)
         {
