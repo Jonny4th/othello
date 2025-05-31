@@ -6,10 +6,10 @@ public class BoardStateCreator
 
     public BoardStateCreator()
     {
-        Cells[3, 3] = Occupancy.White;
-        Cells[4, 4] = Occupancy.White;
-        Cells[3, 4] = Occupancy.Black;
-        Cells[4, 3] = Occupancy.Black;
+        Cells[3, 3] = Occupancy.Black;
+        Cells[4, 4] = Occupancy.Black;
+        Cells[3, 4] = Occupancy.White;
+        Cells[4, 3] = Occupancy.White;
     }
 
     public BoardState Build()

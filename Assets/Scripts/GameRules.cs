@@ -23,11 +23,12 @@ public class GameRules
 
     private int GetDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
     {
+        var captureAmount = 0;
         Occupancy neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
         if(neighbour == Occupancy.None || neighbour == player) return 0;
 
         anchorPoint += direction;
-        var captureAmount = 1;
+        captureAmount++;
 
         while(IsInBounds(anchorPoint))
         {

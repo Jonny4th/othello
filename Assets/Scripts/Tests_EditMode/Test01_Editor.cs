@@ -28,10 +28,10 @@ public class Test01_Editor
         /*
         7 - - - - - - - -
         6 - - - - - - - -
-        5 - - - - / - - -
-        4 - - - x o / - -
-        3 - - / o x - - -
-        2 - - - / - - - -
+        5 - - - / - - - -
+        4 - - / o x - - -
+        3 - - - x o / - -
+        2 - - - - / - - -
         1 - - - - - - - -
         0 - - - - - - - -
           0 1 2 3 4 5 6 7
@@ -39,9 +39,9 @@ public class Test01_Editor
 
         Assert.IsNotNull(legalMoves);
         Assert.IsTrue(legalMoves.Count() == 4);
-        Assert.IsTrue(legalMoves.Contains((2,3)));
-        Assert.IsTrue(legalMoves.Contains((3,2)));
-        Assert.IsTrue(legalMoves.Contains((5,4)));
-        Assert.IsTrue(legalMoves.Contains((4,5)));
+        Assert.IsTrue(legalMoves.Contains((2,4)));
+        Assert.IsTrue(legalMoves.Contains((3,5)));
+        Assert.IsTrue(legalMoves.Contains((4,2)));
+        Assert.IsTrue(legalMoves.Contains((5,3)));
     }
 }
