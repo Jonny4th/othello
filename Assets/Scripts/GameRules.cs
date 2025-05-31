@@ -1,5 +1,29 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public struct Coordinates
+{
+    public int X;
+    public int Y;
+
+    public Coordinates(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public Vector2Int ToVector2Int()
+    {
+        return new Vector2Int(X, Y);
+    }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+}
 
 public enum Occupancy
 {
@@ -17,46 +41,6 @@ public struct BoardState
 
 public class GameRules
 {
-    private Occupancy GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
-    {
-        anchorPoint += direction;
-
-        bool isOutOfBounds = anchorPoint.x < 0 || anchorPoint.x >= state.Cells.GetLength(0) ||
-                             anchorPoint.y < 0 || anchorPoint.y >= state.Cells.GetLength(1);
-
-        if(isOutOfBounds) return Occupancy.OutOfBounds;
-
-        return state.Cells[anchorPoint.x, anchorPoint.y];
-    }
-
-    private int GetPossibleDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
-    {
-        // first neighbour must be opponent's token
-        if(!IsFirstNeigbourOpponent()) return 0;
-
-        anchorPoint += direction;
-        var captureAmount = 1;
-
-        while(true)
-        {
-            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
-
-            if(neighbour == Occupancy.OutOfBounds || neighbour == player)
-                return 0;
-            if(neighbour == Occupancy.None)
-                return captureAmount + 1;
-
-            captureAmount++;
-            anchorPoint += direction;
-        }
-
-        bool IsFirstNeigbourOpponent()
-        {
-            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
-            return neighbour != Occupancy.None && neighbour != Occupancy.OutOfBounds && neighbour != player;
-        }
-    }
-
     private readonly Vector2Int[] directions = new Vector2Int[]
     {
         new (0, 1), // Up
@@ -99,8 +83,86 @@ public class GameRules
         return legalMoves.ToArray();
     }
 
-    public (int, int)[] FindAllCapturedToken(BoardState state)
+    public (int, int)[] GetAllOutflankedTokens(BoardState state)
     {
-        return new (int, int)[0];
+        var capturedTokens = new List<(int, int)>();
+
+        Vector2Int anchorPoint = state.LastPlacedDiscCoordinates.ToVector2Int();
+        Occupancy player = state.Cells[anchorPoint.x, anchorPoint.y];
+
+        foreach(var direction in directions)
+        {
+            int captureAmount = GetTrueDirectionalCaptureAmount(player, anchorPoint, direction, state);
+
+            if(captureAmount == 0) continue;
+
+            for(int i = 1; i <= captureAmount; i++)
+            {
+                var captured = anchorPoint + direction * i;
+                capturedTokens.Add((captured.x, captured.y));
+            }
+        }
+
+        return capturedTokens.ToArray();
+    }
+
+    private Occupancy GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    {
+        anchorPoint += direction;
+
+        bool isOutOfBounds = anchorPoint.x < 0 || anchorPoint.x >= state.Cells.GetLength(0) ||
+                             anchorPoint.y < 0 || anchorPoint.y >= state.Cells.GetLength(1);
+
+        if(isOutOfBounds) return Occupancy.OutOfBounds;
+
+        return state.Cells[anchorPoint.x, anchorPoint.y];
+    }
+
+    private int GetPossibleDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    {
+        return GetDirectionalCaptureAmount(player, anchorPoint, direction, state, outflanking: false);
+    }
+
+    private int GetTrueDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+    {
+        return GetDirectionalCaptureAmount(player, anchorPoint, direction, state, outflanking: true);
+    }
+
+    private int GetDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state, bool outflanking)
+    {
+        // first neighbour must be opponent's token
+        if(!IsFirstNeigbourOpponent()) return 0;
+
+        anchorPoint += direction;
+        var captureAmount = 1;
+
+        while(true)
+        {
+            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
+
+            if(outflanking)
+            {
+                if(neighbour == Occupancy.OutOfBounds || neighbour == Occupancy.None)
+                    return 0;
+                if(neighbour == player)
+                    return captureAmount;
+            }
+            else
+            {
+                if(neighbour == Occupancy.OutOfBounds || neighbour == player)
+                    return 0;
+                if(neighbour == Occupancy.None)
+                    return captureAmount + 1;
+            }
+
+            captureAmount++;
+            anchorPoint += direction;
+        }
+
+        bool IsFirstNeigbourOpponent()
+        {
+            var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
+            return neighbour != Occupancy.None && neighbour != Occupancy.OutOfBounds && neighbour != player;
+        }
     }
 }

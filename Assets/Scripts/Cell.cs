@@ -1,25 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
-
-[Serializable]
-public struct Coordinates
-{
-    public int X;
-    public int Y;
-
-    public Coordinates(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-    
-    public override string ToString()
-    {
-        return $"({X}, {Y})";
-    }
-}
 
 public class Cell : MonoBehaviour, ICell
 {
@@ -45,7 +26,7 @@ public class Cell : MonoBehaviour, ICell
     public void SetToken(Occupancy token)
     {
         //if legal move place token.
-        
+
         m_CurrentToken = token;
         m_CellStateController.SetToken(token);
     }
