@@ -25,7 +25,7 @@ public class Test01_Editor
         var state = new BoardStateCreator().Build();
         var legalMoves = m_GameRule.FindLegalMoves(state, Occupancy.Black);
 
-        /*
+        /* Black's turn
         7 - - - - - - - -
         6 - - - - - - - -
         5 - - - / - - - -
@@ -40,9 +40,137 @@ public class Test01_Editor
 
         Assert.IsNotNull(legalMoves);
         Assert.AreEqual(4, legalMoves.Count());
-        Assert.IsTrue(legalMoves.Contains((2,4)));
-        Assert.IsTrue(legalMoves.Contains((3,5)));
-        Assert.IsTrue(legalMoves.Contains((4,2)));
-        Assert.IsTrue(legalMoves.Contains((5,3)));
+        Assert.IsTrue(legalMoves.Contains((2, 4)));
+        Assert.IsTrue(legalMoves.Contains((3, 5)));
+        Assert.IsTrue(legalMoves.Contains((4, 2)));
+        Assert.IsTrue(legalMoves.Contains((5, 3)));
+    }
+
+    [Test]
+    public void FindLegalMove_01()
+    {
+        var state = new BoardStateCreator().Build();
+
+        // Black placed disc at (4, 2), most recently.
+        state.LastPlacedDiscCoordinates = new Coordinates(4, 2);
+
+        // Black outflanked White token at (4, 3)
+        state.Cells[4, 3] = Occupancy.Black; 
+
+        var legalMoves = m_GameRule.FindLegalMoves(state, Occupancy.White);
+
+        /* White's turn
+        7 - - - - - - - -
+        6 - - - - - - - -
+        5 - - - - - - - -
+        4 - - - o x / - -
+        3 - - - x x - - -
+        2 - - - / x / - -
+        1 - - - - - - - -
+        0 - - - - - - - -
+          0 1 2 3 4 5 6 7
+        */
+        Debug.Log($"Legal Moves: {string.Join(", ", legalMoves.Select(m => $"({m.Item1},{m.Item2})"))}");
+
+        Assert.IsNotNull(legalMoves);
+        Assert.AreEqual(3, legalMoves.Count());
+        Assert.IsTrue(legalMoves.Contains((3, 2)));
+        Assert.IsTrue(legalMoves.Contains((5, 2)));
+        Assert.IsTrue(legalMoves.Contains((5, 4)));
+    }
+
+    [Test]
+    public void TestGetAllOutflankedTokens_01()
+    {
+        var state = new BoardStateCreator().Build();
+        state.LastPlacedDiscCoordinates = new Coordinates(4, 2); // Last placed disc at (4, 2)
+        state.Cells[4, 2] = Occupancy.Black; // Place a black token at (4, 2)
+
+        /* Black played at (4, 2)
+        7 - - - - - - - -
+        6 - - - - - - - -
+        5 - - - - - - - -
+        4 - - - o x - - -
+        3 - - - x o - - -
+        2 - - - - X - - -
+        1 - - - - - - - -
+        0 - - - - - - - -
+          0 1 2 3 4 5 6 7
+        */
+
+        var outflankedTokens = m_GameRule.GetAllOutflankedTokens(state);
+        Debug.Log($"Legal Moves: {string.Join(", ", outflankedTokens.Select(m => $"({m.Item1},{m.Item2})"))}");
+
+        Assert.IsNotNull(outflankedTokens);
+        Assert.AreEqual(1, outflankedTokens.Count());
+        Assert.IsTrue(outflankedTokens.Contains((4, 3)));
+    }
+
+    [Test]
+    public void TestGetAllOutflankedTokens_02()
+    {
+        var state = new BoardStateCreator().Build();
+        state.LastPlacedDiscCoordinates = new Coordinates(4, 0);
+        state.Cells[4, 0] = Occupancy.Black; 
+        state.Cells[4, 1] = Occupancy.White; 
+        state.Cells[4, 2] = Occupancy.White; 
+
+        /* Black outflanked multiple, single-direction tokens
+        7 - - - - - - - -
+        6 - - - - - - - -
+        5 - - - - - - - -
+        4 - - - o x - - -
+        3 - - - x o - - -
+        2 - - - - o- - -
+        1 - - - - o - - -
+        0 - - - - X - - -
+          0 1 2 3 4 5 6 7
+        */
+
+        var outflankedTokens = m_GameRule.GetAllOutflankedTokens(state);
+        Debug.Log($"Legal Moves: {string.Join(", ", outflankedTokens.Select(m => $"({m.Item1},{m.Item2})"))}");
+
+        Assert.IsNotNull(outflankedTokens);
+        Assert.AreEqual(3, outflankedTokens.Count());
+        Assert.IsTrue(outflankedTokens.Contains((4, 3)));
+        Assert.IsTrue(outflankedTokens.Contains((4, 2)));
+        Assert.IsTrue(outflankedTokens.Contains((4, 1)));
+    }
+
+    [Test]
+    public void TestGetAllOutflankedTokens_03()
+    {
+        var state = new BoardStateCreator().Build();
+        state.LastPlacedDiscCoordinates = new Coordinates(1, 4);
+        state.Cells[1, 4] = Occupancy.Black;
+        state.Cells[2, 4] = Occupancy.White;
+        state.Cells[2, 3] = Occupancy.White;
+        state.Cells[3, 3] = Occupancy.White;
+        state.Cells[3, 2] = Occupancy.White;
+        state.Cells[4, 3] = Occupancy.Black;
+        state.Cells[4, 1] = Occupancy.Black;
+
+
+        /* Black outflanked multiple tokens in multiple directions
+        7 - - - - - - - -
+        6 - - - - - - - -
+        5 - - - - - - - -
+        4 - X o o x - - -
+        3 - - o o x - - -
+        2 - - - o - - - -
+        1 - - - - x - - -
+        0 - - - - - - - -
+          0 1 2 3 4 5 6 7
+        */
+
+        var outflankedTokens = m_GameRule.GetAllOutflankedTokens(state);
+        Debug.Log($"Legal Moves: {string.Join(", ", outflankedTokens.Select(m => $"({m.Item1},{m.Item2})"))}");
+
+        Assert.IsNotNull(outflankedTokens);
+        Assert.AreEqual(4, outflankedTokens.Count());
+        Assert.IsTrue(outflankedTokens.Contains((2, 4)));
+        Assert.IsTrue(outflankedTokens.Contains((2, 3)));
+        Assert.IsTrue(outflankedTokens.Contains((3, 4)));
+        Assert.IsTrue(outflankedTokens.Contains((3, 2)));
     }
 }
