@@ -36,9 +36,10 @@ public class Test01_Editor
         0 - - - - - - - -
           0 1 2 3 4 5 6 7
         */
+        Debug.Log($"Legal Moves: {string.Join(", ", legalMoves.Select(m => $"({m.Item1},{m.Item2})"))}");
 
         Assert.IsNotNull(legalMoves);
-        Assert.IsTrue(legalMoves.Count() == 4);
+        Assert.AreEqual(4, legalMoves.Count());
         Assert.IsTrue(legalMoves.Contains((2,4)));
         Assert.IsTrue(legalMoves.Contains((3,5)));
         Assert.IsTrue(legalMoves.Contains((4,2)));
