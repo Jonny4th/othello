@@ -1,0 +1,7 @@
+using Core;
+
+public abstract class BaseHUD : BaseUI
+{
+    public abstract void SetScore(int black, int white);
+    public abstract void SetPlayerTurn(Occupancy currentPlayer);
+}

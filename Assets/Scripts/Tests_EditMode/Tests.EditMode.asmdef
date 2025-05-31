@@ -2,9 +2,9 @@
     "name": "Tests.EditMode",
     "rootNamespace": "",
     "references": [
+        "Core",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Main"
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [
         "Editor"
