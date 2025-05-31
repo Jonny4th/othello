@@ -21,11 +21,12 @@ public struct Coordinates
     }
 }
 
-public enum Token
+public enum Occupancy
 {
     None,
     Black,
     White,
+    OutOfBounds,
 }
 
 public class Cell : MonoBehaviour, ICell
