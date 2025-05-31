@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private bool m_IsGameOver = false;
     public bool IsGameOver => m_IsGameOver;
 
+    (int, int)[] m_CurrentLegalMoves;
 
     private Cell[,] m_Cells;
 
@@ -32,6 +33,18 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         StartGame();
+    }
+
+    public void StartGame()
+    {
+        CreateBoard();
+        IsBlackTurn = true;
+        TurnPhase();
+    }
+
+    public void TurnPhase()
+    {
+        ShowHint(IsBlackTurn ? Occupancy.Black : Occupancy.White);
     }
 
     private void CreateBoard()
@@ -54,20 +67,6 @@ public class GameManager : MonoBehaviour
             cell.OnCellClicked += OnCellClicked;
         }
     }
-
-    public void StartGame()
-    {
-        CreateBoard();
-        IsBlackTurn = true;
-        TurnPhase();
-    }
-
-    public void TurnPhase()
-    {
-        ShowHint(IsBlackTurn ? Occupancy.Black : Occupancy.White);
-    }
-
-    (int, int)[] m_CurrentLegalMoves;
 
     private void ShowHint(Occupancy player)
     {
@@ -129,7 +128,7 @@ public class GameManager : MonoBehaviour
         TurnPhase();
     }
 
-    public Occupancy[,] ConvertCellsToTokenMap(Cell[,] cells)
+    public Occupancy[,] ConvertCellsToTokenMap(ICell[,] cells)
     {
         var lenX = cells.GetLength(0);
         var lenY = cells.GetLength(1);
