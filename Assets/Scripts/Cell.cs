@@ -21,11 +21,12 @@ public struct Coordinates
     }
 }
 
-public enum Token
+public enum Occupancy
 {
     None,
     Black,
     White,
+    OutOfBounds,
 }
 
 public class Cell : MonoBehaviour, ICell
@@ -37,10 +38,10 @@ public class Cell : MonoBehaviour, ICell
     [SerializeField]
     private CellVisualController m_CellStateController;
 
-    public Token CurrentToken => m_CurrentToken;
-    private Token m_CurrentToken = Token.None;
+    public Occupancy CurrentToken => m_CurrentToken;
+    private Occupancy m_CurrentToken = Occupancy.None;
 
-    private bool m_IsOccupied => m_CurrentToken != Token.None;
+    private bool m_IsOccupied => m_CurrentToken != Occupancy.None;
 
     public event Action<ICell> OnCellClicked;
 
@@ -49,7 +50,7 @@ public class Cell : MonoBehaviour, ICell
         m_Coordinates = new Coordinates(x, y);
     }
 
-    public void SetToken(Token token)
+    public void SetToken(Occupancy token)
     {
         //if legal move place token.
         
@@ -101,12 +102,12 @@ public class Cell : MonoBehaviour, ICell
 public interface ICell
 {
     Coordinates Coordinates { get; }
-    Token CurrentToken { get; }
+    Occupancy CurrentToken { get; }
 
     event Action<ICell> OnCellClicked;
 
     void HideHintVisual();
     void SetCoordinates(int x, int y);
-    void SetToken(Token token);
+    void SetToken(Occupancy token);
     void ShowHintVisual();
 }
