@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
 
     private void ShowHint(Occupancy player)
     {
-
         var boardState = new BoardState()
         {
             LastPlacedDiscCoordinates = new(-1, -1),
@@ -70,6 +69,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach(var c in m_Cells) c.HideHintVisual(); 
+
         var token = IsBlackTurn ? Occupancy.Black : Occupancy.White;
         cell.SetToken(token);
         IsBlackTurn = !IsBlackTurn;
@@ -78,6 +79,11 @@ public class GameManager : MonoBehaviour
         {
             LastPlacedDiscCoordinates = cell.Coordinates,
             Cells = ConvertCellsToTokenMap(m_Cells)
+        };
+
+        foreach(var coords in m_GameRules.GetAllOutflankedTokens(boardState))
+        {
+            m_Cells[coords.Item1, coords.Item2].SetToken(token);
         };
     }
 
