@@ -33,22 +33,14 @@ public class Cell : MonoBehaviour, ICell
 
     public void ShowHintVisual()
     {
-        if(m_IsOccupied)
-        {
-            Debug.LogWarning($"Cell at {m_Coordinates} is already occupied. Cannot show hint visual.");
-            return;
-        }
+        if(m_IsOccupied) return;
 
         m_CellStateController.ShowHintVisual();
     }
 
     public void HideHintVisual()
     {
-        if(m_IsOccupied)
-        {
-            Debug.LogWarning($"Cell at {m_Coordinates} is already occupied. Cannot hide hint visual.");
-            return;
-        }
+        if(m_IsOccupied) return;
 
         m_CellStateController.HideHintVisual();
     }
