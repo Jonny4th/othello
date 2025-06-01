@@ -1,11 +1,7 @@
 {
-    "name": "UIs",
+    "name": "Extensions",
     "rootNamespace": "",
     "references": [
-        "GUID:854602359696a764bb2257d84b4c507f",
-        "GUID:c8155368b3082e94ba3a2fffbc2c8104",
-        "GUID:18286da2651ffe04eb165cbe3abb437e",
-        "GUID:ea6bea521c5d61549b2ccecac66484e9",
         "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],

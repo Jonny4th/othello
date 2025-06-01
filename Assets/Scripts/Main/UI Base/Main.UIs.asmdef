@@ -1,9 +1,9 @@
 {
-    "name": "Main",
+    "name": "Main.UIs",
     "rootNamespace": "",
     "references": [
         "GUID:854602359696a764bb2257d84b4c507f",
-        "GUID:18286da2651ffe04eb165cbe3abb437e"
+        "GUID:ea6bea521c5d61549b2ccecac66484e9"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

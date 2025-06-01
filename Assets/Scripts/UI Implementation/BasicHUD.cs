@@ -10,25 +10,47 @@ public class BasicHUD : BaseHUD
     [SerializeField]
     private TMP_Text m_TurnDisplay;
 
-    private const string m_ScoreFormat = "Score :\nBlack {0}\nWhite {1}";
+    [SerializeField]
+    private Color m_WhiteTurnTextColor = Color.white;
+
+    [SerializeField]
+    private Color m_BlackTurnTextColor = Color.black;
+
+    private string m_ScoreFormat = "Score :\n{0} {1}\n{2} {3}";
+
+    private string m_WhitePlayerName;
+    private string m_BlackPlayerName;
 
     public override void SetPlayerTurn(Occupancy currentPlayer)
     {
-        m_TurnDisplay.text = currentPlayer.ToString();
+        var name = currentPlayer switch
+        {
+            Occupancy.Black => m_BlackPlayerName,
+            Occupancy.White => m_WhitePlayerName,
+            _ => "Unknown Player"
+        };
+
+        m_TurnDisplay.text = name;
 
         switch(currentPlayer)
         {
             case Occupancy.Black:
-                m_TurnDisplay.color = Color.black;
+                m_TurnDisplay.color = m_BlackTurnTextColor;
                 break;
             case Occupancy.White:
-                m_TurnDisplay.color = Color.white;
+                m_TurnDisplay.color = m_WhiteTurnTextColor;
                 break;
         }
     }
 
-    public override void SetScore(int black, int white)
+    public override void SetScore(int blackScore, int whiteScore)
     {
-        m_ScoreDisplay.text = string.Format(m_ScoreFormat, black, white);
+        m_ScoreDisplay.text = string.Format(m_ScoreFormat, m_BlackPlayerName, blackScore, m_WhitePlayerName, whiteScore);
+    }
+
+    public override void SetPlayerName(string black, string white)
+    {
+        m_BlackPlayerName = black;
+        m_WhitePlayerName = white;
     }
 }

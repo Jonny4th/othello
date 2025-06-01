@@ -26,8 +26,6 @@ public class Cell : MonoBehaviour, ICell
 
     public void SetToken(Occupancy token)
     {
-        //if legal move place token.
-
         m_CurrentToken = token;
         m_CellStateController.SetToken(token);
     }

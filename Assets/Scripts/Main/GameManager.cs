@@ -1,4 +1,5 @@
 using Core;
+using Main.Models;
 using Main.UIs;
 using System.Linq;
 using UnityEngine;
@@ -20,6 +21,9 @@ namespace Main.GameManager
         private Transform m_BoardParent;
 
         [SerializeField]
+        private BaseStartMenu m_StartMenu;
+
+        [SerializeField]
         private BaseEndGameDisplay m_EndGameDisplay;
 
         [SerializeField]
@@ -37,19 +41,57 @@ namespace Main.GameManager
 
         private GameRules m_GameRules = new();
 
+        [SerializeField]
+        private string m_WhitePlayerName = "Chandra";
+
+        [SerializeField]
+        private string m_BlackPlayerName = "Rahu";
+
+        private Bot m_Bot;
+        private bool m_IsBotTurn = false;
+
+        [SerializeField]
+        private Occupancy m_BotColor = Occupancy.None; // bot occupancy = none to ensure bot is not used by default
+
         private void Start()
         {
+            ShowTitlePage();
+            CreateBoard();
+        }
+
+        private void ShowTitlePage()
+        {
+            m_StartMenu.OnPlayGameRequest.AddListener(BeginGame);
+            m_StartMenu.Show();
+        }
+
+        private void BeginGame(GameParameters parameter)
+        {
+            m_StartMenu.OnPlayGameRequest.RemoveListener(BeginGame);
+
+            if(parameter.IsBotUsed)
+            {
+                m_Bot = new();
+                m_BotColor = parameter.PlayerColor == Occupancy.Black ? Occupancy.White : Occupancy.Black;
+                m_Bot.SetGameRules(m_GameRules);
+                m_Bot.OnBotMoveMade += HandleBotMoveMade;
+            }
+
             StartGame();
         }
 
         public void StartGame()
         {
+            if(m_Bot != null) m_Bot.OnBotMoveMade += HandleBotMoveMade;
+
+            m_StartMenu.Hide();
             m_EndGameDisplay.Hide();
 
             CreateBoard();
 
             IsBlackTurn = true;
 
+            m_HUD.SetPlayerName(m_BlackPlayerName, m_WhitePlayerName);
             m_HUD.SetScore(2, 2);
             m_HUD.SetPlayerTurn(Occupancy.Black);
             m_HUD.Show();
@@ -61,19 +103,44 @@ namespace Main.GameManager
         {
             var currentPlayer = IsBlackTurn ? Occupancy.Black : Occupancy.White;
             m_HUD.SetPlayerTurn(currentPlayer);
-            ShowHint(currentPlayer);
+            m_IsBotTurn = currentPlayer == m_BotColor && !IsGameOver;
+
+            var boardState = new BoardState()
+            {
+                LastPlacedDiscCoordinates = new(-1, -1),
+                Cells = ConvertCellsToTokenMap(m_Cells)
+            };
+
+            ShowHint(boardState, currentPlayer);
+
+            if(m_IsBotTurn & !m_IsGameOver)
+            {
+                m_Bot.MakeDecision(boardState, m_BotColor);
+            }
         }
 
         public void TriggerEndGame(BoardState boardState)
         {
+            if(m_Bot != null) m_Bot.OnBotMoveMade -= HandleBotMoveMade;
+
             (int a, int b) = m_GameRules.CountTokens(boardState);
             var winner = a > b ? Occupancy.Black : Occupancy.White;
             if(a == b) { winner = Occupancy.None; }
 
-            Debug.Log($"Game Over: {winner} won.\nBlack / White:{a}/{b}");
+            switch(winner)
+            {
+                case Occupancy.None:
+                    m_EndGameDisplay.SetWinner("It's a draw!\n<size=120>Wanna try another round?</size>");
+                    break;
+                case Occupancy.Black:
+                    m_EndGameDisplay.SetWinner("Rahu won!\n<size=120>Come and be eaten, Chandra!</size>");
+                    break;
+                case Occupancy.White:
+                    m_EndGameDisplay.SetWinner("Chandra won!\n<size=120>Leave me alone already, Rahu!</size>");
+                    break;
+            }
 
-            m_EndGameDisplay.SetScore($"Black / White\n{a} / {b}");
-            m_EndGameDisplay.SetWinner($"{winner} won.");
+            m_EndGameDisplay.SetScore($"Rahu {a}\nChandra {b}");
 
             m_HUD.Hide();
 
@@ -82,11 +149,7 @@ namespace Main.GameManager
 
         private void CreateBoard()
         {
-            if(m_Cells == null)
-            {
-                m_Cells = BoardCreator.CreateBoard(m_CellPrototype, m_BoardWidth, m_BoardHeight, m_BoardParent);
-                Debug.Log($"Board created with {m_Cells.Length} cells.");
-            }
+            m_Cells ??= BoardCreator.CreateBoard(m_CellPrototype, m_BoardWidth, m_BoardHeight, m_BoardParent);
 
             var initialState = new BoardStateCreator().Build();
 
@@ -104,21 +167,11 @@ namespace Main.GameManager
             }
         }
 
-        private void ShowHint(Occupancy player)
+        private void ShowHint(BoardState boardState, Occupancy player)
         {
-            var boardState = new BoardState()
-            {
-                LastPlacedDiscCoordinates = new(-1, -1),
-                Cells = ConvertCellsToTokenMap(m_Cells)
-            };
-
             m_CurrentLegalMoves = m_GameRules.FindLegalMoves(boardState, player);
 
-            if(m_CurrentLegalMoves.Length == 0)
-            {
-                IsBlackTurn = !IsBlackTurn;
-                TurnPhase();
-            }
+            if(m_CurrentLegalMoves.Length == 0) SwitchTurn();
 
             foreach((int x, int y) in m_CurrentLegalMoves)
             {
@@ -127,6 +180,12 @@ namespace Main.GameManager
         }
 
         private void OnCellClicked(ICell cell)
+        {
+            if(m_IsBotTurn) return; //block player from clicking while bot is making a move
+            ProcessMove(cell);
+        }
+
+        private void ProcessMove(ICell cell)
         {
             if(cell.CurrentToken != Occupancy.None) return;
 
@@ -150,8 +209,28 @@ namespace Main.GameManager
                 TriggerEndGame(updatedBoardState);
                 return;
             }
+            
+            SwitchTurn();
+        }
 
+        private void HandleBotMoveMade(Coordinates coordinates)
+        {
+            Debug.Log($"Bot made a move at {coordinates}");
+            if(coordinates.X < 0 || coordinates.Y < 0 || coordinates.X >= m_BoardWidth || coordinates.Y >= m_BoardHeight)
+            {
+                Debug.LogWarning("Bot made an invalid move. Ignoring.");
+                SwitchTurn();
+                return;
+            }
+
+            ICell cell = m_Cells[coordinates.X, coordinates.Y];
+            ProcessMove(cell);
+        }
+
+        private void SwitchTurn()
+        {
             IsBlackTurn = !IsBlackTurn;
+            m_IsBotTurn &= false;
             TurnPhase();
         }
 
