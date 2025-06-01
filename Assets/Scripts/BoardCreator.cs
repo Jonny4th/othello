@@ -15,9 +15,15 @@ public class BoardCreator
         {
             for(int y = 0; y < height; y++)
             {
+                var parameter = new InstantiateParameters()
+                {
+                    parent = parent,
+                    worldSpace = false
+                };
+
                 var posX = x * size.x - startPosX;
                 var posY = y * size.y - startPosY;
-                var cell = Object.Instantiate(prototype, new Vector3(posX, posY, 0), Quaternion.identity, parent);
+                var cell = Object.Instantiate(prototype, new Vector3(posX, posY, 0), Quaternion.identity, parameter);
 
                 cell.SetCoordinates(x, y);
                 cell.name = $"Cell_{x}_{y}";
