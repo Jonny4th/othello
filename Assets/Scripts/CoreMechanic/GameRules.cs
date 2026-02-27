@@ -32,7 +32,7 @@ namespace Core
         }
     }
 
-    public enum Occupancy
+    public enum Faction
     {
         None,
         Black,
@@ -43,23 +43,23 @@ namespace Core
     public struct BoardState
     {
         public Coordinates LastPlacedDiscCoordinates;
-        public Occupancy[,] Cells;
+        public Faction[,] Cells;
 
-        public Occupancy LastPlacedDisc => Cells[LastPlacedDiscCoordinates.X, LastPlacedDiscCoordinates.Y];
+        public Faction LastPlacedDisc => Cells[LastPlacedDiscCoordinates.X, LastPlacedDiscCoordinates.Y];
     }
 
     public class GameRules
     {
         private readonly Vector2Int[] directions = new Vector2Int[]
         {
-        new (0, 1), // Up
-        new (0, -1), // Down
-        new (-1, 0),// Left
-        new (1, 0), // Right
-        new (-1, 1),// Up-Left
-        new (1, 1), // Up-Right
-        new (-1, -1),// Down-Left
-        new (1, -1),// Down-Right
+            new (0, 1), // Up
+            new (0, -1), // Down
+            new (-1, 0),// Left
+            new (1, 0), // Right
+            new (-1, 1),// Up-Left
+            new (1, 1), // Up-Right
+            new (-1, -1),// Down-Left
+            new (1, -1),// Down-Right
         };
 
         public (int black, int white) CountTokens(BoardState state)
@@ -73,10 +73,10 @@ namespace Core
                 {
                     switch(state.Cells[i, j])
                     {
-                        case Occupancy.Black:
+                        case Faction.Black:
                             blackCount++;
                             break;
-                        case Occupancy.White:
+                        case Faction.White:
                             whiteCount++;
                             break;
                     }
@@ -100,7 +100,7 @@ namespace Core
             {
                 foreach(var cell in state.Cells)
                 {
-                    if(cell == Occupancy.None) return false;
+                    if(cell == Faction.None) return false;
                 }
 
                 return true;
@@ -108,13 +108,13 @@ namespace Core
 
             bool isNoLegalMovesPossible(BoardState state)
             {
-                var blackMoves = FindLegalMoves(state, Occupancy.Black);
-                var whiteMoves = FindLegalMoves(state, Occupancy.White);
+                var blackMoves = FindLegalMoves(state, Faction.Black);
+                var whiteMoves = FindLegalMoves(state, Faction.White);
                 return blackMoves.Length == 0 && whiteMoves.Length == 0;
             }
         }
 
-        public (int, int)[] FindLegalMoves(BoardState state, Occupancy player)
+        public (int, int)[] FindLegalMoves(BoardState state, Faction player)
         {
             var legalMoves = new List<(int, int)>();
 
@@ -122,7 +122,7 @@ namespace Core
             {
                 for(int j = 0; j < state.Cells.GetLength(1); j++)
                 {
-                    if(state.Cells[i, j] == Occupancy.None) continue;
+                    if(state.Cells[i, j] == Faction.None) continue;
                     if(state.Cells[i, j] != player) continue;
 
                     foreach(var direction in directions)
@@ -141,20 +141,25 @@ namespace Core
             return legalMoves.ToArray();
         }
 
-        public (int, int)[] GetAllOutflankedTokens(BoardState state)
+        /// <summary>
+        /// Returns all the coordinates of the outflanked tokens that need to be flipped.
+        /// </summary>
+        /// <param name="state">Current Board State</param>
+        /// <returns></returns>
+        public (int xCor, int yCor)[] GetAllOutflankedTokens(BoardState state)
         {
             var capturedTokens = new List<(int, int)>();
 
             Vector2Int anchorPoint = state.LastPlacedDiscCoordinates.ToVector2Int();
-            Occupancy player = state.Cells[anchorPoint.x, anchorPoint.y];
+            Faction player = state.Cells[anchorPoint.x, anchorPoint.y];
 
-            foreach(var direction in directions)
+            foreach (var direction in directions)
             {
                 int captureAmount = GetTrueDirectionalCaptureAmount(player, anchorPoint, direction, state);
 
-                if(captureAmount == 0) continue;
+                if (captureAmount == 0) continue;
 
-                for(int i = 1; i <= captureAmount; i++)
+                for (int i = 1; i <= captureAmount; i++)
                 {
                     var captured = anchorPoint + direction * i;
                     capturedTokens.Add((captured.x, captured.y));
@@ -166,17 +171,17 @@ namespace Core
             return capturedTokens.ToArray();
         }
 
-        private int GetPossibleDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+        private int GetPossibleDirectionalCaptureAmount(Faction player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
         {
             return GetDirectionalOutflankAmount(player, anchorPoint, direction, state, isOutflanking: false);
         }
 
-        private int GetTrueDirectionalCaptureAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+        private int GetTrueDirectionalCaptureAmount(Faction player, Vector2Int anchorPoint, Vector2Int direction, BoardState state)
         {
             return GetDirectionalOutflankAmount(player, anchorPoint, direction, state, isOutflanking: true);
         }
 
-        private int GetDirectionalOutflankAmount(Occupancy player, Vector2Int anchorPoint, Vector2Int direction, BoardState state, bool isOutflanking)
+        private int GetDirectionalOutflankAmount(Faction player, Vector2Int anchorPoint, Vector2Int direction, BoardState state, bool isOutflanking)
         {
             if(!IsFirstNeigbourOpponent()) return 0;
 
@@ -187,19 +192,19 @@ namespace Core
             {
                 switch(GetDirectionalNeighbour(anchorPoint, direction, state))
                 {
-                    case Occupancy.OutOfBounds:
+                    case Faction.OutOfBounds:
                         return 0;
 
-                    case Occupancy.None:
+                    case Faction.None:
                         return isOutflanking ? 0 : outflankAmount;
 
-                    case Occupancy.Black:
-                        if(player == Occupancy.Black)
+                    case Faction.Black:
+                        if(player == Faction.Black)
                             return isOutflanking ? outflankAmount : 0;
                         break;
 
-                    case Occupancy.White:
-                        if(player == Occupancy.White)
+                    case Faction.White:
+                        if(player == Faction.White)
                             return isOutflanking ? outflankAmount : 0;
                         break;
                 }
@@ -211,18 +216,18 @@ namespace Core
             bool IsFirstNeigbourOpponent()
             {
                 var neighbour = GetDirectionalNeighbour(anchorPoint, direction, state);
-                return neighbour != Occupancy.None && neighbour != Occupancy.OutOfBounds && neighbour != player;
+                return neighbour != Faction.None && neighbour != Faction.OutOfBounds && neighbour != player;
             }
         }
 
-        private Occupancy GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
+        private Faction GetDirectionalNeighbour(Vector2Int anchorPoint, Vector2Int direction, BoardState state)
         {
             anchorPoint += direction;
 
             bool isOutOfBounds = anchorPoint.x < 0 || anchorPoint.x >= state.Cells.GetLength(0) ||
                                  anchorPoint.y < 0 || anchorPoint.y >= state.Cells.GetLength(1);
 
-            if(isOutOfBounds) return Occupancy.OutOfBounds;
+            if(isOutOfBounds) return Faction.OutOfBounds;
 
             return state.Cells[anchorPoint.x, anchorPoint.y];
         }

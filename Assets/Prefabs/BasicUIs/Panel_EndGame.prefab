@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 3096403000051337480}
   - component: {fileID: 1524931620795627914}
   - component: {fileID: 2544272409500521710}
+  - component: {fileID: 1191750396879809615}
   m_Layer: 5
   m_Name: Panel_EndGame
   m_TagString: Untagged
@@ -349,6 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 112d87c32895e374b8b27991e6919571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanvasGroup: {fileID: 1191750396879809615}
   OnRestartButtonPressed:
     m_PersistentCalls:
       m_Calls:
@@ -369,6 +371,18 @@ MonoBehaviour:
   m_RestartButton: {fileID: 4457464084889494463}
   m_ViewToggleButton: {fileID: 7610010308534674879}
   m_CanvasRenderer: {fileID: 3096403000051337480}
+--- !u!225 &1191750396879809615
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2812397912057142452}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4471141901980275401
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,19 +503,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3420912593862273726}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Main.GameManager.GameManager, Main
-        m_MethodName: StartGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &5913073961380399994
 GameObject:
   m_ObjectHideFlags: 0

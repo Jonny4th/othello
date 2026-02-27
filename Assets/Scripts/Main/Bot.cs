@@ -14,7 +14,7 @@ public class Bot
         m_GameRule = ruleBook;
     }
 
-    public void MakeDecision(BoardState boardState, Occupancy botColor)
+    public void MakeDecision(BoardState boardState, Faction botColor)
     {
         var legalMoves = m_GameRule.FindLegalMoves(boardState, botColor);
 

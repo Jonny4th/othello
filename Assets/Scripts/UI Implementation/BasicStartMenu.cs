@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class BasicStartMenu : BaseStartMenu
 {
     [SerializeField]
-    private GameObject m_TitlePage;
+    private CanvasGroup m_TitlePage;
 
     [SerializeField]
     private Button m_StartWithBot_Button;
@@ -15,13 +15,16 @@ public class BasicStartMenu : BaseStartMenu
     private Button m_StartWithTwoLocalPlayer_Button;
 
     [SerializeField]
-    private GameObject m_ChooseColorPage;
+    private CanvasGroup m_ChooseColorPage;
 
     [SerializeField]
     private Button m_ChooseBlack_Button;
 
     [SerializeField]
     private Button m_ChooseWhite_Button;
+
+    [SerializeField]
+    private GameConfig m_GameConfigAsset;
 
     private void OnEnable()
     {
@@ -47,18 +50,18 @@ public class BasicStartMenu : BaseStartMenu
 
     private void GoToChooseColorPage()
     {
-        m_TitlePage.SetActive(false);
-        m_ChooseColorPage.SetActive(true);
-        m_ChooseBlack_Button.onClick.AddListener(() => HandleColorSelected(Occupancy.Black));
-        m_ChooseWhite_Button.onClick.AddListener(() => HandleColorSelected(Occupancy.White));
+        m_TitlePage.alpha = 0;
+        m_ChooseColorPage.alpha = 1;
+        m_ChooseBlack_Button.onClick.AddListener(() => HandleColorSelected(Faction.Black));
+        m_ChooseWhite_Button.onClick.AddListener(() => HandleColorSelected(Faction.White));
     }
 
-    private void HandleColorSelected(Occupancy playerColor)
+    private void HandleColorSelected(Faction playerColor)
     {
         m_ChooseBlack_Button.onClick.RemoveAllListeners();
         m_ChooseWhite_Button.onClick.RemoveAllListeners();
-        m_ChooseColorPage.SetActive(false);
+        m_ChooseColorPage.alpha = 0;
 
-        OnPlayGameRequest?.Invoke(new GameParameters { PlayerColor = playerColor, IsBotUsed = true });
+        OnPlayGameRequest?.Invoke(new GameParameters { PlayerFaction = playerColor, IsBotUsed = true });
     }
 }

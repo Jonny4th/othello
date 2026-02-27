@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 2112309755919939684}
   - component: {fileID: 6966253774459757506}
   - component: {fileID: 3990167658634351311}
+  - component: {fileID: 433887672446232931}
   m_Layer: 5
   m_Name: Panel_HUD
   m_TagString: Untagged
@@ -366,7 +367,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9bd66352801a640b83ec697d55ba15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_CanvasGroup: {fileID: 433887672446232931}
   m_ScoreDisplay: {fileID: 4904403573759574975}
   m_TurnDisplay: {fileID: 262157219400639133}
   m_WhiteTurnTextColor: {r: 1, g: 1, b: 1, a: 1}
   m_BlackTurnTextColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!225 &433887672446232931
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8490378009931209340}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

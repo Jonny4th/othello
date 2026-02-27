@@ -20,20 +20,20 @@ public class CellVisualController : MonoBehaviour
         m_SpriteRenderer.gameObject.SetActive(false);
     }
 
-    public void SetToken(Occupancy token)
+    public void SetToken(Faction token)
     {
         Debug.Log($"Placing token: {token} at cell: {name}");
 
         switch (token)
         {
-            case Occupancy.None:
+            case Faction.None:
                 m_SpriteRenderer.gameObject.SetActive(false);
                 break;
-            case Occupancy.Black:
+            case Faction.Black:
                 m_SpriteRenderer.gameObject.SetActive(true);
                 m_SpriteRenderer.color = Color.black;
                 break;
-            case Occupancy.White:
+            case Faction.White:
                 m_SpriteRenderer.gameObject.SetActive(true);
                 m_SpriteRenderer.color = Color.white;
                 break;

@@ -21,12 +21,12 @@ public class BasicHUD : BaseHUD
     private string m_WhitePlayerName;
     private string m_BlackPlayerName;
 
-    public override void SetPlayerTurn(Occupancy currentPlayer)
+    public override void SetPlayerTurn(Faction currentPlayer)
     {
         var name = currentPlayer switch
         {
-            Occupancy.Black => m_BlackPlayerName,
-            Occupancy.White => m_WhitePlayerName,
+            Faction.Black => m_BlackPlayerName,
+            Faction.White => m_WhitePlayerName,
             _ => "Unknown Player"
         };
 
@@ -34,10 +34,10 @@ public class BasicHUD : BaseHUD
 
         switch(currentPlayer)
         {
-            case Occupancy.Black:
+            case Faction.Black:
                 m_TurnDisplay.color = m_BlackTurnTextColor;
                 break;
-            case Occupancy.White:
+            case Faction.White:
                 m_TurnDisplay.color = m_WhiteTurnTextColor;
                 break;
         }

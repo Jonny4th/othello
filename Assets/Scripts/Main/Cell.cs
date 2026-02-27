@@ -12,10 +12,10 @@ public class Cell : MonoBehaviour, ICell
     [SerializeField]
     private CellVisualController m_CellStateController;
 
-    public Occupancy CurrentToken => m_CurrentToken;
-    private Occupancy m_CurrentToken = Occupancy.None;
+    public Faction CurrentToken => m_CurrentToken;
+    private Faction m_CurrentToken = Faction.None;
 
-    private bool m_IsOccupied => m_CurrentToken != Occupancy.None;
+    private bool m_IsOccupied => m_CurrentToken != Faction.None;
 
     public event Action<ICell> OnCellClicked;
 
@@ -24,7 +24,7 @@ public class Cell : MonoBehaviour, ICell
         m_Coordinates = new Coordinates(x, y);
     }
 
-    public void SetToken(Occupancy token)
+    public void SetToken(Faction token)
     {
         m_CurrentToken = token;
         m_CellStateController.SetToken(token);
@@ -66,12 +66,12 @@ public class Cell : MonoBehaviour, ICell
 public interface ICell
 {
     Coordinates Coordinates { get; }
-    Occupancy CurrentToken { get; }
+    Faction CurrentToken { get; }
 
     event Action<ICell> OnCellClicked;
 
     void HideHintVisual();
     void SetCoordinates(int x, int y);
-    void SetToken(Occupancy token);
+    void SetToken(Faction token);
     void ShowHintVisual();
 }

@@ -2,16 +2,16 @@ namespace Core
 {
     public class BoardStateCreator
     {
-        private Occupancy LastPlayer = Occupancy.None;
+        private Faction LastPlayer = Faction.None;
         private Coordinates LastCoordinates = new(-1, -1);
-        private Occupancy[,] Cells = new Occupancy[8, 8];
+        private Faction[,] Cells = new Faction[8, 8];
 
         public BoardStateCreator()
         {
-            Cells[3, 3] = Occupancy.Black;
-            Cells[4, 4] = Occupancy.Black;
-            Cells[3, 4] = Occupancy.White;
-            Cells[4, 3] = Occupancy.White;
+            Cells[3, 3] = Faction.Black;
+            Cells[4, 4] = Faction.Black;
+            Cells[3, 4] = Faction.White;
+            Cells[4, 3] = Faction.White;
         }
 
         public BoardState Build()
@@ -25,17 +25,17 @@ namespace Core
 
         public BoardStateCreator SetSize(int width, int height)
         {
-            Cells = new Occupancy[width, height];
+            Cells = new Faction[width, height];
             return this;
         }
 
-        public BoardStateCreator SetToken(int x, int y, Occupancy token)
+        public BoardStateCreator SetToken(int x, int y, Faction token)
         {
             Cells[x, y] = token;
             return this;
         }
 
-        public BoardStateCreator SetLastPlayer(Occupancy player)
+        public BoardStateCreator SetLastPlayer(Faction player)
         {
             LastPlayer = player;
             return this;

@@ -24,7 +24,7 @@ public class Test01_Editor
     public void FindLegalMove_00()
     {
         var state = new BoardStateCreator().Build();
-        var legalMoves = m_GameRule.FindLegalMoves(state, Occupancy.Black);
+        var legalMoves = m_GameRule.FindLegalMoves(state, Faction.Black);
 
         /* Black's turn
         7 - - - - - - - -
@@ -56,9 +56,9 @@ public class Test01_Editor
         state.LastPlacedDiscCoordinates = new Coordinates(4, 2);
 
         // Black outflanked White token at (4, 3)
-        state.Cells[4, 3] = Occupancy.Black; 
+        state.Cells[4, 3] = Faction.Black; 
 
-        var legalMoves = m_GameRule.FindLegalMoves(state, Occupancy.White);
+        var legalMoves = m_GameRule.FindLegalMoves(state, Faction.White);
 
         /* White's turn
         7 - - - - - - - -
@@ -85,7 +85,7 @@ public class Test01_Editor
     {
         var state = new BoardStateCreator().Build();
         state.LastPlacedDiscCoordinates = new Coordinates(4, 2); // Last placed disc at (4, 2)
-        state.Cells[4, 2] = Occupancy.Black; // Place a black token at (4, 2)
+        state.Cells[4, 2] = Faction.Black; // Place a black token at (4, 2)
 
         /* Black played at (4, 2)
         7 - - - - - - - -
@@ -112,9 +112,9 @@ public class Test01_Editor
     {
         var state = new BoardStateCreator().Build();
         state.LastPlacedDiscCoordinates = new Coordinates(4, 0);
-        state.Cells[4, 0] = Occupancy.Black; 
-        state.Cells[4, 1] = Occupancy.White; 
-        state.Cells[4, 2] = Occupancy.White; 
+        state.Cells[4, 0] = Faction.Black; 
+        state.Cells[4, 1] = Faction.White; 
+        state.Cells[4, 2] = Faction.White; 
 
         /* Black outflanked multiple, single-direction tokens
         7 - - - - - - - -
@@ -143,13 +143,13 @@ public class Test01_Editor
     {
         var state = new BoardStateCreator().Build();
         state.LastPlacedDiscCoordinates = new Coordinates(1, 4);
-        state.Cells[1, 4] = Occupancy.Black;
-        state.Cells[2, 4] = Occupancy.White;
-        state.Cells[2, 3] = Occupancy.White;
-        state.Cells[3, 3] = Occupancy.White;
-        state.Cells[3, 2] = Occupancy.White;
-        state.Cells[4, 3] = Occupancy.Black;
-        state.Cells[4, 1] = Occupancy.Black;
+        state.Cells[1, 4] = Faction.Black;
+        state.Cells[2, 4] = Faction.White;
+        state.Cells[2, 3] = Faction.White;
+        state.Cells[3, 3] = Faction.White;
+        state.Cells[3, 2] = Faction.White;
+        state.Cells[4, 3] = Faction.Black;
+        state.Cells[4, 1] = Faction.Black;
 
 
         /* Black outflanked multiple tokens in multiple directions
@@ -180,8 +180,8 @@ public class Test01_Editor
     {
         var state = new BoardStateCreator().Build();
         state.LastPlacedDiscCoordinates = new Coordinates(1, 4);
-        state.Cells[4, 4] = Occupancy.White;
-        state.Cells[3, 3] = Occupancy.White;
+        state.Cells[4, 4] = Faction.White;
+        state.Cells[3, 3] = Faction.White;
 
         /* Simulate all White tokens
         7 - - - - - - - -
@@ -195,7 +195,7 @@ public class Test01_Editor
           0 1 2 3 4 5 6 7
         */
 
-        var outflankedTokens = m_GameRule.FindLegalMoves(state, Occupancy.Black);
+        var outflankedTokens = m_GameRule.FindLegalMoves(state, Faction.Black);
         Debug.Log($"Legal Moves: {string.Join(", ", outflankedTokens.Select(m => $"({m.Item1},{m.Item2})"))}");
 
         Assert.IsNotNull(outflankedTokens);
