@@ -1,9 +1,7 @@
 using Core;
 using Main.Models;
 using System.Collections;
-using System.Data.Common;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class GameplayManager : MonoBehaviour

@@ -51,6 +51,9 @@ public class BasicStartMenu : BaseStartMenu
     private void GoToChooseColorPage()
     {
         m_TitlePage.alpha = 0;
+        m_TitlePage.interactable = false;
+        m_TitlePage.blocksRaycasts = false;
+
         m_ChooseColorPage.alpha = 1;
         m_ChooseBlack_Button.onClick.AddListener(() => HandleColorSelected(Faction.Black));
         m_ChooseWhite_Button.onClick.AddListener(() => HandleColorSelected(Faction.White));

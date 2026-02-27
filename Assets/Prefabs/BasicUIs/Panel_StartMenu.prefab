@@ -804,7 +804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7159164842151740135
 RectTransform:
   m_ObjectHideFlags: 0
@@ -847,7 +847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0.19215688, g: 0.35149014, b: 0.4745098, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1304,10 +1304,10 @@ MonoBehaviour:
   OnPlayGameRequest:
     m_PersistentCalls:
       m_Calls: []
-  m_TitlePage: {fileID: 5685600105199515656}
+  m_TitlePage: {fileID: 2976727874165063905}
   m_StartWithBot_Button: {fileID: 526800264125196494}
   m_StartWithTwoLocalPlayer_Button: {fileID: 8985769698064846152}
-  m_ChooseColorPage: {fileID: 5008145534903473521}
+  m_ChooseColorPage: {fileID: 3737824360965683347}
   m_ChooseBlack_Button: {fileID: 6824602396140517052}
   m_ChooseWhite_Button: {fileID: 9158596310208743956}
   m_GameConfigAsset: {fileID: 11400000, guid: f89067db329fde540b03ce60ed44190a, type: 2}

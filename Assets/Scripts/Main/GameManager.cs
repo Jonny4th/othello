@@ -3,6 +3,7 @@ using Main.Models;
 using Main.UIs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Main.GameManager
 {
@@ -44,6 +45,7 @@ namespace Main.GameManager
         {
             ShowTitlePage();
             m_EndGameEvent.AddListener(TriggerEndGame);
+            m_EndGameDisplay.Hide();
             m_EndGameDisplay.OnRestartButtonPressed.AddListener(HandleRestart);
         }
 
@@ -62,7 +64,7 @@ namespace Main.GameManager
         {
             //show loading
 
-            await SceneManager.LoadSceneAsync(2,LoadSceneMode.Additive);
+            await SceneManager.LoadSceneAsync(1,LoadSceneMode.Additive);
 
             //hide loading
 
