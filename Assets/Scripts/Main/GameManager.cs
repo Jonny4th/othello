@@ -41,6 +41,8 @@ namespace Main.GameManager
 
         private GameParameters m_GameParameters;
 
+        private bool m_IsGameLoaded = false;
+
         private void Start()
         {
             ShowTitlePage();
@@ -51,6 +53,7 @@ namespace Main.GameManager
 
         private void HandleRestart()
         {
+            Debug.Log("Restart");
             BeginGame(m_GameParameters);
         }
 
@@ -64,7 +67,11 @@ namespace Main.GameManager
         {
             //show loading
 
-            await SceneManager.LoadSceneAsync(1,LoadSceneMode.Additive);
+            if(!m_IsGameLoaded)
+            {
+                await SceneManager.LoadSceneAsync(1,LoadSceneMode.Additive);
+                m_IsGameLoaded = true;
+            }
 
             //hide loading
 

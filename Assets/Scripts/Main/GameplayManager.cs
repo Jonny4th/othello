@@ -32,7 +32,6 @@ public class GameplayManager : MonoBehaviour
 
     private Cell[,] m_Cells;
     private bool m_IsPlaying = false;
-    private bool m_IsGameOver = false;
 
     private Coroutine m_Game;
     private GameRules m_GameRules = new();
@@ -44,19 +43,27 @@ public class GameplayManager : MonoBehaviour
 
     public bool IsBlackTurn = true; // Track whose turn it is.
 
-    private void Start()
+    private void Awake()
     {
         m_StartGameEvent.AddListener(StartGame);
     }
 
     public void StartGame(GameParameters parameters)
     {
-        m_StartGameEvent.RemoveListener(StartGame);
-
-        if(m_Game != null)
+        if(m_Game != null || m_IsPlaying)
         {
             Debug.LogWarning("Cannot start another game while a session is running.");
             return;
+        }
+
+        //reset
+        m_IsPlaying = true;
+        if(m_Cells != null)
+        {
+            foreach(var cell in m_Cells)
+            {
+                cell.SetToken(Faction.None);
+            }
         }
 
         //m_Game = StartCoroutine(RunGameLogic(parameters));
@@ -86,7 +93,7 @@ public class GameplayManager : MonoBehaviour
     {
         var currentPlayer = IsBlackTurn ? Faction.Black : Faction.White;
         m_Hud.SetPlayerTurn(currentPlayer);
-        m_IsBotTurn = currentPlayer == m_BotColor && !m_IsGameOver;
+        m_IsBotTurn = currentPlayer == m_BotColor && m_IsPlaying;
 
         var boardState = new BoardState()
         {
@@ -96,7 +103,7 @@ public class GameplayManager : MonoBehaviour
 
         ShowHint(boardState, currentPlayer);
 
-        if(m_Bot != null && m_IsBotTurn && !m_IsGameOver)
+        if(m_Bot != null && m_IsBotTurn && m_IsPlaying)
         {
             m_Bot.MakeDecision(boardState, m_BotColor);
         }
@@ -137,7 +144,7 @@ public class GameplayManager : MonoBehaviour
         m_Hud.Show();
 
         //run game
-        while(m_IsPlaying && !m_IsGameOver)
+        while(m_IsPlaying)
         {
             yield return null;
         }
@@ -206,6 +213,7 @@ public class GameplayManager : MonoBehaviour
 
         if(m_GameRules.IsGameOver(updatedBoardState))
         {
+            m_IsPlaying = false;
             TriggerEndGame(updatedBoardState);
             return;
         }
